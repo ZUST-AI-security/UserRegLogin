@@ -86,8 +86,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 @app.post("/refresh", response_model=schemas.Token)
-async def refresh_token(refresh_token: str, db: Session = Depends(database.get_db)):
-    payload = security.verify_token(refresh_token, is_refresh=True)
+async def refresh_token(request: schemas.TokenRefreshRequest, db: Session = Depends(database.get_db)):
+    payload = security.verify_token(request.refresh_token, is_refresh=True)
     if payload is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -103,7 +103,7 @@ async def refresh_token(refresh_token: str, db: Session = Depends(database.get_d
     access_token = security.create_access_token(
         data={"sub": user.username, "id": user.id}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    return {"access_token": access_token, "refresh_token": request.refresh_token, "token_type": "bearer"}
 
 @app.get("/users/me")
 async def read_users_me(current_user: schemas.TokenData = Depends(get_current_user)):

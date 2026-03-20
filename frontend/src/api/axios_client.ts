@@ -27,8 +27,8 @@ api.interceptors.response.use(
       const refreshToken = useAuthStore.getState().refreshToken;
       if (refreshToken) {
         try {
-          const response = await axios.post('http://localhost:8000/refresh', null, {
-            params: { refresh_token: refreshToken }
+          const response = await axios.post('http://localhost:8000/refresh', {
+            refresh_token: refreshToken
           });
           const { access_token } = response.data;
           
