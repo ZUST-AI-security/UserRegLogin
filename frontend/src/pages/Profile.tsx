@@ -19,7 +19,7 @@ const Profile: React.FC = () => {
       setUser(response.data);
       setLastFetch(new Date().toLocaleTimeString());
       if (manual) message.success('User data refreshed!');
-    } catch (error) {
+    } catch {
       message.error('Failed to fetch user data');
     } finally {
       setLoading(false);

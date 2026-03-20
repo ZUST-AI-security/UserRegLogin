@@ -4,10 +4,15 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios_client';
 
+interface RegisterValues {
+  username?: string;
+  password?: string;
+}
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: RegisterValues) => {
     try {
       await api.post('/register', {
         username: values.username,
@@ -22,7 +27,7 @@ const Register: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Card title="User Registration" style={{ width: 400 }}>
+      <Card title="注册" style={{ width: 400 }}>
         <Form name="register" onFinish={onFinish}>
           <Form.Item
             name="username"

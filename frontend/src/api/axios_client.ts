@@ -5,7 +5,6 @@ const api = axios.create({
   baseURL: 'http://localhost:8000',
 });
 
-// Request interceptor for adding the access token to the header
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().accessToken;
@@ -17,7 +16,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor for handling 401 errors and refreshing the token
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -34,14 +32,14 @@ api.interceptors.response.use(
           });
           const { access_token } = response.data;
           
-          // Update the zustand store with the new access token
+          // 更新zustand auth store
           useAuthStore.getState().setAuth(access_token, refreshToken);
           
-          // Retry the original request with the new access token
+          // 带上新的access token
           originalRequest.headers.Authorization = `Bearer ${access_token}`;
           return api(originalRequest);
         } catch (refreshError) {
-          // If the refresh token is also invalid, log the user out
+          // 彻底失效，跳转到登录页
           useAuthStore.getState().logout();
           window.location.href = '/login';
           return Promise.reject(refreshError);

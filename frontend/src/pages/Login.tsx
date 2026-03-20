@@ -5,15 +5,20 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios_client';
 import { useAuthStore } from '../store/useAuthStore';
 
+interface LoginValues {
+  username?: string;
+  password?: string;
+}
+
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: LoginValues) => {
     try {
       const formData = new FormData();
-      formData.append('username', values.username);
-      formData.append('password', values.password);
+      formData.append('username', values.username || '');
+      formData.append('password', values.password || '');
 
       const response = await api.post('/token', formData);
       const { access_token, refresh_token } = response.data;
@@ -30,7 +35,7 @@ const Login: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Card title="User Login" style={{ width: 400 }}>
+      <Card title="登录" style={{ width: 400 }}>
         <Form name="login" onFinish={onFinish}>
           <Form.Item
             name="username"
